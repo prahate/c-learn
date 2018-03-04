@@ -16,6 +16,8 @@ struct node *head=NULL;
 */
 int add_node(int num){
 	struct node *n1, *temp;
+	
+	//Allocate memory to the new node
 	n1 = (struct node *)malloc(sizeof(struct node));
 	if (!n1) {
 		printf("Failed to allocate memory to node\n");
@@ -23,6 +25,7 @@ int add_node(int num){
 	}
 
 	n1->num = num;
+	//Check if its the first node in the list
 	if (head == NULL)
 	{
 		n1->next_node = NULL;
@@ -38,6 +41,35 @@ int add_node(int num){
 	return 1;
 }
 
+
+/*
+* void delete_node()
+* Deletes the last node int the list
+*/
+void delete_node() {
+	struct node *temp;
+	temp = head;
+
+	//Check if the current node is the only node in the list
+	if (temp->next_node == NULL) {
+		printf("Deleting last node\n");
+		free(temp);
+		head = NULL;
+	}
+	else {
+		// Go till the second last node of the list
+		while (temp->next_node->next_node != NULL)
+			temp =  temp->next_node;
+	
+		//Free the last node using pointer of second last node
+		printf("Deleting last node\n");
+		free(temp->next_node);
+		//make second last node as last node by setting its next_node to NULL
+		temp->next_node = NULL;
+	}
+}
+
+
 /*
 * void print_list()
 * Prints the linked list
@@ -46,11 +78,16 @@ void print_list() {
 	struct node *temp;
 	temp = head;
 
-	while (temp->next_node != NULL) {
-		printf("Value in the node is %d\n",temp->num);
-		temp = temp->next_node;
+	if (temp == NULL) {
+		printf("Linked list is empty\n");
 	}
-	printf("Value in the node is %d\n", temp->num);
+	else {
+		while (temp->next_node != NULL) {
+			printf("Value in the node is %d\n",temp->num);
+			temp = temp->next_node;
+		}
+		printf("Value in the node is %d\n", temp->num);
+	}
 }
 
 int main () {
@@ -66,6 +103,14 @@ int main () {
 	if (!ret) 
 		return -1;
 	print_list();
+
+	delete_node();
+	delete_node();
+	delete_node();
+
+	print_list();
+
+
 
 return 0;
 }
