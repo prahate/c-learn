@@ -50,8 +50,12 @@ void delete_node() {
 	struct node *temp;
 	temp = head;
 
+	// check if head is NULL in that case there is nothing to delete
+	if (temp == NULL) {
+		printf("No node to delete\n");
+	}
 	//Check if the current node is the only node in the list
-	if (temp->next_node == NULL) {
+	else if (temp->next_node == NULL) {
 		printf("Deleting last node\n");
 		free(temp);
 		head = NULL;
