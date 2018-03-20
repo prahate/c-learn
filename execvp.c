@@ -15,6 +15,8 @@ int main () {
 	else if ( rc == 0 ) {	//child process
 		printf("Hello I am child PID : %d\n", (int) getpid());
 		char *args[] = {"./hello", NULL};
+		// Exec replaces the child process's code segment  with contents of hello executable, also reinitialises stack
+		// So exec does not create separate process but rather it replaces existing process
 		execvp(args[0], args);
 		printf("This line wont be printed\n");
 	}
