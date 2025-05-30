@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 
 	mqd_t mqd;
 
-	flags = IPC_CREAT | O_RDWR;
+	flags = O_CREAT | O_RDWR;
 
 	attrp = NULL;
 	attr.mq_maxmsg = 256;	// max # message queues
