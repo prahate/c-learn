@@ -43,6 +43,7 @@ void push(char c)
     node_t *n = new_node(c);
     if (top == NULL) {
         top = n;
+        n->next = NULL;
     } else {
         n->next = top;
         top = n;
@@ -57,7 +58,7 @@ char pop()
     else {
         node_t *temp = top;
         ret = top->c;
-        top = top->next;
+        top = temp->next;
         delete_node(temp);
     }
 
@@ -91,7 +92,7 @@ char reversedBracket(char *c)
 
 bool validateSequence(char *s, int len)
 {
-    for(int i=0; i <len; i++)
+    for(int i=0; i < strlen((const char *)s); i++)
     {
         char curr = *(s+i);
         if (isLeftSideBracket((s+i)))
@@ -104,7 +105,7 @@ bool validateSequence(char *s, int len)
                 return false;
         }
     }
-    return len % 2 == 0 ? true : false;
+    return isEmpty();
 }
 
 
@@ -121,23 +122,24 @@ int main() {
     len = strlen(s2);
 
     if (validateSequence(s2, len))
-        printf("s1 Valid sequence\n");
+        printf("s2 Valid sequence\n");
     else
-        printf("s1 Invalid sequence\n");
+        printf("s2 Invalid sequence\n");
     
     char s3[] = {'{',']'};
     len = strlen(s3);
 
     if (validateSequence(s3, len))
-        printf("s1 Valid sequence\n");
+        printf("s3 Valid sequence\n");
     else
-        printf("s1 Invalid sequence\n");
+        printf("s3 Invalid sequence\n");
     
+    pop(); // to pop out last failed push item
     char s4[] = {'{','}','(',')','[','(', ')', ']'};
-    len = strlen(s4);
+    int len2 = strlen(s4);
 
-    if (validateSequence(s4, len))
-        printf("s1 Valid sequence\n");
+    if (validateSequence(s4, len2))
+        printf("s4 Valid sequence\n");
     else
-        printf("s1 Invalid sequence\n");
+        printf("s4 Invalid sequence\n");
 }
