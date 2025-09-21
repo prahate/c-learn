@@ -83,6 +83,113 @@ void postorder(node_t *rootnode)
         printf("%d ", rootnode->data);
 }
 
+// level order traversal we need to use queue operation
+
+// structure to hold node_t and next pointer
+typedef struct sNode {
+    node_t *node;
+    struct sNode* next;
+} Node_t;
+
+Node_t* add_node(node_t *n)
+{
+    Node_t *new = (Node_t *)malloc(sizeof(Node_t));
+    if (new) {
+        new->node = n;
+        new->next = NULL;
+        return new;
+    }
+    return NULL;
+}
+
+void remove_node(Node_t *n)
+{
+    if(n)
+    {
+        free(n);
+    }
+    n = NULL;
+}
+
+// structure to hold head & tail of tree
+typedef struct sQueue {
+    Node_t *head;
+    Node_t *tail;
+} queue_t;
+
+queue_t q;
+
+bool isQEmpty()
+{
+    if (q.head == NULL && q.tail == NULL)
+        return true;
+    return false;
+}
+
+void enqueue(node_t *node)
+{
+    Node_t *new = add_node(node);
+    // case 1: queue is empty
+    if (q.head == NULL && q.tail == NULL)
+    {
+        q.head = new;
+        q.tail = new;
+    }
+    // case 2: queue is not empty
+    else {
+        q.tail->next = new;
+        q.tail = new;
+    }
+}
+
+node_t* dequeue()
+{
+    // case 1: queue is empty
+    if (q.head == NULL && q.tail == NULL)
+    {
+        printf("Queue is empty\n");
+        return NULL;
+    }
+    // only one item in queue
+    else if (q.head == q.tail) {
+        node_t *tmp = q.head->node;
+        //remove_node(q.head);
+        q.head == NULL;
+        q.tail == NULL;
+        return tmp;
+    }
+    // case 2: queue is not empty
+    else {
+        Node_t *temp = q.head;
+        node_t *tmp = q.head->node;
+        q.head = temp->next;
+        remove_node(temp);
+        return tmp;
+    }
+}
+
+void levelorder(node_t *rootnode)
+{
+    // first queue the root node
+    enqueue(rootnode);
+
+    while(!isQEmpty())
+    {
+        node_t *curr;
+        // dequeue the node
+        curr = dequeue();
+
+        printf("%d ", curr->data);
+
+        if (curr->left != NULL)
+            enqueue(curr->left);
+
+        if (curr->right != NULL)
+            enqueue(curr->right);
+    }
+}
+
+
 int main()
 {
     root = insert(NULL, 11);
@@ -106,6 +213,9 @@ int main()
     printf("\n");
     printf("Postorder : ");
     postorder(root);
+    printf("\n");
+    printf("levelorder : ");
+    levelorder(root);
     printf("\n");
     return 0;
 }
