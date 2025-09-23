@@ -1,3 +1,15 @@
+/*
+* Expected output
+* span-62@span62-Lenovo-G50-80:~/c-learn/dsa$ gcc binarysearchtree.c -o bst -g
+  span-62@span62-Lenovo-G50-80:~/c-learn/dsa$ ./bst
+  Inorder : 1 3 5 6 7 8 11 12 13 14 15 17 19 
+  Preorder : 11 6 3 1 5 8 7 15 13 12 14 17 19 
+  Postorder : 1 5 3 7 8 6 12 14 13 19 17 15 11 
+  levelorder : 11 6 15 3 8 13 17 1 5 7 12 14 19
+*
+*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -65,8 +77,8 @@ void remove_tnode(tnode_t** rootptr, int data)
         // case 1: node has no subtrees ie. leaf node
         if (root->left == NULL && root->right == NULL)
         {
-            //*(&root) = NULL;
-            free(*(&root));
+            *(&root) = NULL;
+            //free(*(&root));
         }
         // case 2 & 3: node has right or left subtree
         else if (root->left == NULL)
@@ -120,39 +132,29 @@ void postorder(tnode_t *rootptr)
         printf("%d ", rootptr->value);
 }
 
-#if 0
 // level order traversal we need to use queue operation
 
 // structure to hold node_t and next pointer
-typedef struct sNode {
-    node_t *node;
-    struct sNode* next;
-} Node_t;
+typedef struct qnode {
+    tnode_t tnode;
+    struct qnode* next;
+} qnode_t;
 
-Node_t* add_node(node_t *n)
+qnode_t* add_node(tnode_t *tn)
 {
-    Node_t *new = (Node_t *)malloc(sizeof(Node_t));
+    qnode_t *new = (qnode_t *)malloc(sizeof(qnode_t));
     if (new) {
-        new->node = n;
+        new->tnode = *tn;
         new->next = NULL;
         return new;
     }
     return NULL;
 }
 
-void remove_node(Node_t *n)
-{
-    if(n)
-    {
-        free(n);
-    }
-    n = NULL;
-}
-
 // structure to hold head & tail of tree
 typedef struct sQueue {
-    Node_t *head;
-    Node_t *tail;
+    qnode_t *head;
+    qnode_t *tail;
 } queue_t;
 
 queue_t q;
@@ -164,9 +166,9 @@ bool isQEmpty()
     return false;
 }
 
-void enqueue(node_t *node)
+void enqueue(tnode_t *node)
 {
-    Node_t *new = add_node(node);
+    qnode_t *new = add_node(node);
     // case 1: queue is empty
     if (q.head == NULL && q.tail == NULL)
     {
@@ -180,7 +182,7 @@ void enqueue(node_t *node)
     }
 }
 
-node_t* dequeue()
+tnode_t* dequeue()
 {
     // case 1: queue is empty
     if (q.head == NULL && q.tail == NULL)
@@ -190,34 +192,32 @@ node_t* dequeue()
     }
     // only one item in queue
     else if (q.head == q.tail) {
-        node_t *tmp = q.head->node;
-        //remove_node(q.head);
-        q.head == NULL;
-        q.tail == NULL;
+        tnode_t *tmp = &q.head->tnode;
+        q.head = NULL;
+        q.tail = NULL;
         return tmp;
     }
     // case 2: queue is not empty
     else {
-        Node_t *temp = q.head;
-        node_t *tmp = q.head->node;
+        qnode_t *temp = q.head;
+        tnode_t *tmp = &q.head->tnode;
         q.head = temp->next;
-        remove_node(temp);
         return tmp;
     }
 }
 
-void levelorder(node_t *rootnode)
+void levelorder(tnode_t *rootnode)
 {
     // first queue the root node
     enqueue(rootnode);
-
+    
+    tnode_t *curr;
     while(!isQEmpty())
     {
-        node_t *curr;
         // dequeue the node
         curr = dequeue();
 
-        printf("%d ", curr->data);
+        printf("%d ", curr->value);
 
         if (curr->left != NULL)
             enqueue(curr->left);
@@ -226,7 +226,6 @@ void levelorder(node_t *rootnode)
             enqueue(curr->right);
     }
 }
-#endif
 
 int main()
 {
@@ -247,19 +246,18 @@ int main()
     printf("Inorder : ");
     inorder(root);
     printf("\n");
-#if 1
     printf("Preorder : ");
     preorder(root);
     printf("\n");
     printf("Postorder : ");
     postorder(root);
     printf("\n");
-#endif
 
-    //printf("levelorder : ");
-    //levelorder(root);
-    //printf("\n");
-#if 1
+    printf("levelorder : ");
+    levelorder(root);
+    printf("\n");
+   
+#if 0
     remove_tnode(&root, 5);
     printf("Inorder : ");
     inorder(root);
