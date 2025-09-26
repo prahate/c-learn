@@ -9,12 +9,11 @@
 span-62@:~/c-learn/dsa$ gcc heapminmax.c -o heap -g
 span-62@:~/c-learn/dsa$
 span-62@:~/c-learn/dsa$ ./heap
-1 3 5 9 10 28 23 17
+1 5 7 13 9 10 15 
 Removed 1
-3 9 5 17 10 28 23
-Removed 3
-5 9 23 17 10 28
-
+5 9 7 13 15 10 
+Removed 5
+7 9 10 13 15
 */
 
 typedef struct sHeap {
@@ -113,14 +112,15 @@ void heapifyDown(heap_t *h, int index)
 {
     int lindex = getLeftchildIndex(index);
     int rindex = getRightchildIndex(index);
-    int minIndex;
-    if (hasLeft(h, index) && (h->arr[lindex] < h->arr[index])) {
+    int minIndex = index;
+    if (hasLeft(h, index) && (h->arr[lindex] < h->arr[minIndex])) {
         minIndex = lindex;
     }
 
-    else if (hasRight(h, index) && (h->arr[rindex] < h->arr[index])) {
+    if (hasRight(h, index) && (h->arr[rindex] < h->arr[minIndex])) {
         minIndex = rindex;
     }
+#if 0
     else
         return;
 
@@ -128,7 +128,7 @@ void heapifyDown(heap_t *h, int index)
         minIndex = lindex;
     else
         minIndex = rindex;
-
+#endif
     if (minIndex != index) {
         swap(h->arr, index, minIndex);
         heapifyDown(h, minIndex);
@@ -148,16 +148,15 @@ int remove_data(heap_t *h)
 
 int main()
 {
-    heap_t *heap = create_heap(8);
+    heap_t *heap = create_heap(7);
 
-    insert(heap, 10);
+    insert(heap, 7);
+    insert(heap, 13);
     insert(heap, 5);
-    insert(heap, 23);
-    insert(heap, 17);
-    insert(heap, 9);
-    insert(heap, 28);
-    insert(heap, 3);
     insert(heap, 1);
+    insert(heap, 9);
+    insert(heap, 10);
+    insert(heap, 15);
 
     for (int i=1; i <= heap->heapsz; i++)
         printf("%d ", heap->arr[i-1]);
