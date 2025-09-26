@@ -117,6 +117,15 @@ void insertAt(dlist_t *dl, int data, int pos)
     dl->size++;
 }
 
+void printreverse(dlist_t *dl)
+{
+    node_t *temp = dl->tail;
+    while(temp != NULL) {
+        printf("%d ", temp->value);
+        temp = temp->prev;
+    }
+    printf("\n");
+}
 
 void printlist(dlist_t *dl)
 {
@@ -151,6 +160,8 @@ int main()
     insertAt(dlist, 67, 1);
     printf("After insertAt: ");
     printlist(dlist);
+    printf("printing reverse: ");
+    printreverse(dlist);
     //dlist_free(dlist);
 
     return 0;
