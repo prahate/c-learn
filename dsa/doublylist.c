@@ -54,6 +54,11 @@ void delete_node(node_t *n)
         free(n);
 }
 
+int getSize(dlist_t *dl)
+{
+    return dl->size;
+}
+
 void append(dlist_t *dl, int data)
 {
     node_t *n = create_node(data);
@@ -90,12 +95,12 @@ void prepend(dlist_t *dl, int data)
 
 void insertAt(dlist_t *dl, int data, int pos)
 {
-    if (pos > dl->size || pos < 0)
+    if (pos > dl->size+ 1 || pos < 1)
         return;
 
     if (pos ==  1)
         prepend(dl, data);
-    else if (pos == dl->size)
+    else if (pos == dl->size + 1)
         append(dl, data);
     else {
         int count =1;
@@ -140,8 +145,10 @@ int main()
     prepend(dlist, 38);
     printf("After prepend: ");
     printlist(dlist);
-    insertAt(dlist, 98, 3);
-    insertAt(dlist, 67, 2);
+    insertAt(dlist, 98, 7);
+    printf("After insertAt: ");
+    printlist(dlist);
+    insertAt(dlist, 67, 1);
     printf("After insertAt: ");
     printlist(dlist);
     //dlist_free(dlist);
