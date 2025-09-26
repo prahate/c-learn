@@ -4,12 +4,23 @@
 
 /*
 * Array based implementation of min/max heap using recurrsion
+*
+* Expected output after running 
+span-62@:~/c-learn/dsa$ gcc heapminmax.c -o heap -g
+span-62@:~/c-learn/dsa$
+span-62@:~/c-learn/dsa$ ./heap
+1 3 5 9 10 28 23 17
+Removed 1
+3 9 5 17 10 28 23
+Removed 3
+5 9 23 17 10 28
+
 */
 
 typedef struct sHeap {
     int *arr;   // dynamic array to hold the data
-    int heapsz;
-    int arrsz;
+    int heapsz;  // to track last available position in array
+    int arrsz;  // to create arr of size
 } heap_t;
 
 heap_t * create_heap(int size)
@@ -38,25 +49,19 @@ void free_heap(heap_t *h)
 int getParentIndex(int index)
 {
     int pIndex=0;
-    if (index > 0)
-        pIndex = (index - 1)/2;
-    return pIndex;
+    return pIndex = (index - 1)/2;
 }
 
 int getLeftchildIndex(int index)
 {
     int lindex=0;
-    if (index > 0)
-        lindex = (2 * index) + 1;
-    return lindex;
+    return lindex = (2 * index) + 1;
 }
 
 int getRightchildIndex(int index)
 {
     int rindex=0;
-    if (index > 0)
-        rindex = (2 * index) + 2;
-    return rindex;
+    return rindex = (2 * index) + 2;
 }
 
 void swap(int *h, int i, int j)
@@ -104,15 +109,70 @@ void insert(heap_t *h, int data)
     }
 }
 
+void heapifyDown(heap_t *h, int index)
+{
+    int lindex = getLeftchildIndex(index);
+    int rindex = getRightchildIndex(index);
+    int minIndex;
+    if (hasLeft(h, index) && (h->arr[lindex] < h->arr[index])) {
+        minIndex = lindex;
+    }
+
+    else if (hasRight(h, index) && (h->arr[rindex] < h->arr[index])) {
+        minIndex = rindex;
+    }
+    else
+        return;
+
+    if (h->arr[lindex] < h->arr[rindex])
+        minIndex = lindex;
+    else
+        minIndex = rindex;
+
+    if (minIndex != index) {
+        swap(h->arr, index, minIndex);
+        heapifyDown(h, minIndex);
+    }
+}
+
+int remove_data(heap_t *h)
+{
+    int temp = h->arr[0]; // save the root node data
+    h->arr[0] = h->arr[h->heapsz -1]; // replace with data at right most node
+    h->heapsz--;    // decrement heap size
+    if (h->heapsz > 1)
+        heapifyDown(h, 0);
+
+    return temp;
+}
+
 int main()
 {
-    heap_t *heap = create_heap(7);
+    heap_t *heap = create_heap(8);
 
     insert(heap, 10);
     insert(heap, 5);
+    insert(heap, 23);
+    insert(heap, 17);
+    insert(heap, 9);
+    insert(heap, 28);
     insert(heap, 3);
     insert(heap, 1);
 
+    for (int i=1; i <= heap->heapsz; i++)
+        printf("%d ", heap->arr[i-1]);
+    printf("\n");
+
+    int data = remove_data(heap);
+    printf("Removed %d\n", data);
+    
+    for (int i=1; i <= heap->heapsz; i++)
+        printf("%d ", heap->arr[i-1]);
+    printf("\n");
+    
+    data = remove_data(heap);
+    printf("Removed %d\n", data);
+    
     for (int i=1; i <= heap->heapsz; i++)
         printf("%d ", heap->arr[i-1]);
     printf("\n");
